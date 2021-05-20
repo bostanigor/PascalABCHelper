@@ -3,10 +3,15 @@ class Api::GroupsController < ApiController
   before_action :set_group, only: [:show, :update]
 
   def index
-    @groups = Group.all.order(created_at: :desc)
+    @groups = Group.order(created_at: :desc)
+
+    paginated = params[:page].present? ?
+      @groups.page(params[:page]).per(params[:per_page] || 20) :
+      @groups.all
 
     render 'api/groups/index', locals: {
-      groups: @groups
+      groups: paginated,
+      meta: meta_attributes(paginated)
     }
   end
 

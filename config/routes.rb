@@ -8,5 +8,6 @@ Rails.application.routes.draw do
     resources :students
     resources :groups
     resources :tasks
+    resources :solutions
   end
 end

@@ -22,7 +22,7 @@ class Api::StudentsController < ApiController
 
   def show
     render 'api/students/show', locals: {
-      student: @student.includes(:user, :group)
+      student: @student
     }
   end
 

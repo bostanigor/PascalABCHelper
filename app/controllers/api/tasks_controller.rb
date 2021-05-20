@@ -3,10 +3,15 @@ class Api::TasksController < ApiController
   before_action :set_task, only: [:show, :update]
 
   def index
-    @tasks = Task.all.order(created_at: :desc)
+    @tasks = Task.order(created_at: :desc)
+
+    paginated = params[:page].present? ?
+      @tasks.page(params[:page]).per(params[:per_page] || 20) :
+      @tasks.all
 
     render 'api/tasks/index', locals: {
-      tasks: @tasks
+      tasks: @tasks,
+      meta: meta_attributes(paginated)
     }
   end
 
