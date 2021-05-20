@@ -5,7 +5,7 @@ class ApiController < ApplicationController
   private
 
   def check_admin!
-    render json: { error: "Current user is not admin" }, status: 401 if current_user.is_admin
+    render json: { error: "Current user is not admin" }, status: 401 unless current_user.is_admin
   end
 
   def set_default_format

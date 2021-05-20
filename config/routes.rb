@@ -2,9 +2,11 @@ Rails.application.routes.draw do
   devise_for :users, controllers: { registrations: 'registrations' }
 
   namespace :api, defaults: { format: :json } do
-    namespace :users do
-      post '/auth', to: 'authentication#create'
-      get  '/auth', to: 'authentication#fetch'
-    end
+    post '/auth', to: 'authentication#create'
+    get  '/auth', to: 'authentication#fetch'
+
+    resources :students
+    resources :groups
+    resources :tasks
   end
 end
