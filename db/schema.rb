@@ -22,6 +22,7 @@ ActiveRecord::Schema.define(version: 2021_05_12_110312) do
   end
 
   create_table "solutions", force: :cascade do |t|
+    t.boolean "is_successfull"
     t.bigint "student_id", null: false
     t.bigint "task_id", null: false
     t.datetime "created_at", precision: 6, null: false

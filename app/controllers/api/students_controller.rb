@@ -1,19 +1,28 @@
 class Api::StudentsController < ApiController
   before_action :check_admin!
+  before_action :set_student, only: [:show, :update]
+
+  META_PARAMS = %i(page per_page sort).freeze
 
   def index
-    @students = Student.includes(:user, :group).all
+    @students = Student.includes(:user, :group)
+      .sort_query(sort_params)
+      .where(index_params.except(*META_PARAMS))
+
+    paginated = params[:page].present? ?
+      @students.page(params[:page]).per(params[:per_page] || 20) :
+      @students.all
+
 
     render 'api/students/index', locals: {
-      students: @students
+      students: paginated,
+      meta: meta_attributes(paginated)
     }
   end
 
   def show
-    @student = Student.includes(:user, :group).find(params[:id])
-
     render 'api/students/show', locals: {
-      student: @student
+      student: @student.includes(:user, :group)
     }
   end
 
@@ -31,7 +40,6 @@ class Api::StudentsController < ApiController
   end
 
   def update
-    @student = Student.find(params[:id])
     @user = @student.user
 
     @student.assign_attributes(create_params.except(:user_attributes))
@@ -63,4 +71,23 @@ class Api::StudentsController < ApiController
       ]
     )
   end
+
+  def index_params
+    params.permit(
+      :group_id,
+      :page,
+      :per_page,
+      sort: [
+        :col,
+        :dir
+      ]
+    )
+  end
+
+  def sort_params
+    index_params[:sort].to_h.reverse_merge(col: :created_at, dir: :desc)
+  end
+
+  def set_student =
+    @student = Student.find(params[:id])
 end

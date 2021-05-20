@@ -1,4 +1,6 @@
 class Student < ApplicationRecord
+  include Sortable
+
   belongs_to :user
   belongs_to :group
 

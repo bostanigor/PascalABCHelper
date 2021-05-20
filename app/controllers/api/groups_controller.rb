@@ -3,7 +3,7 @@ class Api::GroupsController < ApiController
   before_action :set_group, only: [:show, :update]
 
   def index
-    @groups = Group.all
+    @groups = Group.all.order(created_at: :desc)
 
     render 'api/groups/index', locals: {
       groups: @groups
