@@ -18,6 +18,11 @@ class ApiController < ApplicationController
     render json: { error: "Current user is not admin" }, status: 401 unless current_user.is_admin
   end
 
+  def check_student!
+    @student = Student.find_by(user: current_user)
+    render json: { error: "Current user is not student" }, status: 401 unless @student.present?
+  end
+
   def set_default_format
     request.format = :json
   end

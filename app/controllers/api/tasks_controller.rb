@@ -50,7 +50,7 @@ class Api::TasksController < ApiController
   private
 
   def create_params =
-    params.require(:task).permit(:name)
+    params.require(:task).permit(:name, :ref)
 
   def set_task =
     @task = Task.find(params[:id])

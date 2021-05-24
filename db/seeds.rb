@@ -8,7 +8,8 @@ end
 
 tasks = (1..5).map do |i|
   Task.create!(
-    name: "Задача-#{i}"
+    name: "Задача-#{i}",
+    ref: "task-#{i}"
   )
 end
 
@@ -31,11 +32,15 @@ students = (0..24).map do |i|
   )
 end
 
-solutions = (0..399).map do |i|
-  Solution.create!(
-    student: students.sample,
-    task: tasks.sample,
-    is_successfull: [true, false].sample
-  )
+
+tasks.map do |task|
+  students.map do |student|
+    Solution.create!(
+      student: student,
+      task: task,
+      is_successfull: [true, false].sample,
+      attempts_count: (1..10).to_a.sample
+    )
+  end
 end
 

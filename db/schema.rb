@@ -23,6 +23,8 @@ ActiveRecord::Schema.define(version: 2021_05_12_110312) do
 
   create_table "solutions", force: :cascade do |t|
     t.boolean "is_successfull"
+    t.integer "attempts_count", default: 0
+    t.datetime "last_attempt_at"
     t.bigint "student_id", null: false
     t.bigint "task_id", null: false
     t.datetime "created_at", precision: 6, null: false
@@ -45,6 +47,7 @@ ActiveRecord::Schema.define(version: 2021_05_12_110312) do
 
   create_table "tasks", force: :cascade do |t|
     t.string "name"
+    t.string "ref"
     t.decimal "rating", precision: 10, scale: 2
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false

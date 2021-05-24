@@ -1,6 +1,7 @@
 class Api::SolutionsController < ApiController
-  before_action :check_admin!
-  before_action :set_solution, only: [:show, :update]
+  before_action :check_admin!, except: [:create]
+  before_action :check_student!, only: [:create]
+  before_action :set_solution, only: [:show]
 
   META_PARAMS = %i(page per_page sort).freeze
 
@@ -26,7 +27,15 @@ class Api::SolutionsController < ApiController
   end
 
   def create
-    @solution = Solution.new(create_params)
+    @task = Task.find_by(ref: params[:ref])
+    render json: { error: "Task is not found" }, status: 500 and return unless @task.present?
+
+    @solution = @task.solutions.find_by(student: @student) ||
+      Solution.new(task: @task, student: @student)
+
+    @solution.assign_attributes(
+      is_successfull: params[:is_successfull],
+    )
 
     if @solution.save
       render 'api/solutions/show', locals: {
@@ -39,24 +48,7 @@ class Api::SolutionsController < ApiController
     end
   end
 
-  def update
-    if @solution.update(create_params)
-      render 'api/solutions/show', locals: {
-        solution: @solution
-      }
-    else
-      render json: {
-        errors: @solution.errors
-      }
-    end
-  end
-
   private
-
-  def create_params =
-    params.require(:solution).permit(
-      :student_id, :task_id, :is_successfull
-    )
 
   def index_params
     params.permit(
