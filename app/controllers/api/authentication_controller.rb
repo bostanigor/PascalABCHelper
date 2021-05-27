@@ -3,15 +3,18 @@ class Api::AuthenticationController < ApiController
 
   def create
     user = User.find_by(email: params[:email])
-    puts user
     if user&.valid_password?(params[:password])
       render json: { data: { token: JsonWebToken.encode(sub: user.id) } }
     else
-      render json: { errors: 'invalid' }
+      render json: { errors: 'invalid' }, status: 401
     end
   end
 
   def fetch
-    render json: current_user
+    @student = current_user.student
+    render 'api/authentication/fetch', locals: {
+      user: current_user,
+      student: @student
+    }
   end
 end
