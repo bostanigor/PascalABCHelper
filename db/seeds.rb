@@ -33,14 +33,23 @@ students = (0..24).map do |i|
 end
 
 
-tasks.map do |task|
+solutions = tasks.map do |task|
   students.map do |student|
-    Solution.create!(
+    sol = Solution.create(
       student: student,
       task: task,
-      is_successfull: [true, false].sample,
-      attempts_count: (1..10).to_a.sample
+      is_successfull: prng.rand(0..100) > 80
     )
   end
+end.flatten
+
+(1..5).each do |attempt|
+  puts "Attempt # #{attempt}"
+  solutions.each do |solution|
+    next if solution.is_successfull
+    solution.update(is_successfull: prng.rand(0..100) > 80)
+  end
+  sleep(5)
 end
+
 

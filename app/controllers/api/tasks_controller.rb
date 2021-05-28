@@ -1,13 +1,13 @@
 class Api::TasksController < ApiController
   before_action :check_admin!, only: [:create, :update]
-  before_action :set_task, only: [:show, :update]
+  before_action :set_task, only: [:show, :update, :destroy]
 
   def index
     @tasks = Task.order(created_at: :desc)
 
     paginated = params[:page].present? ?
       @tasks.page(params[:page]).per(params[:per_page] || 20) :
-      @tasks.all
+      @tasks.all.page(0)
 
     render 'api/tasks/index', locals: {
       tasks: @tasks,
@@ -43,6 +43,18 @@ class Api::TasksController < ApiController
     else
       render json: {
         errors: @task.errors
+      }
+    end
+  end
+
+  def destroy
+    if @task.destroy
+      render json: {
+        data: { message: t('tasks.deleted')}
+      }
+    else
+      render json: {
+        data: { errors: @task.errors }
       }
     end
   end

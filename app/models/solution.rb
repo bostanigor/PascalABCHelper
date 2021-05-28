@@ -9,14 +9,12 @@ class Solution < ApplicationRecord
   private
 
   def change_task_rating
-    all_solutions = task.solutions
+    task.all_attempts += 1
+    task.successfull_attempts += 1 if is_successfull
 
-    successfull_attempts = all_solutions.where(is_successfull: true).count
-    all_attempts = all_solutions.all.map(&:attempts_count).sum
-
-    k = 1 - (successfull_attempts.to_f / all_attempts)
-
-    task.update(rating: k * 10)
+    k = 1 - (task.successfull_attempts.to_f / task.all_attempts)
+    task.rating = k * 10
+    task.save
   end
 
   def check_time
@@ -33,7 +31,7 @@ class Solution < ApplicationRecord
   end
 
   def set_default
-    self.attempts_count ||= 1
-    self.last_attempt_at ||= Time.now
+    self.attempts_count = 1
+    self.last_attempt_at = Time.now
   end
 end

@@ -323,9 +323,9 @@ module Devise
         payload = JsonWebToken.decode(token)
         success! User.find(payload['sub'])
       rescue JWT::ExpiredSignature
-        fail! 'Auth token has expired'
+        fail! (t "jwt.expired")
       rescue JWT::DecodeError
-        fail! 'Auth token is invalid'
+        fail! (t "jwt.invalid")
       end
 
     end

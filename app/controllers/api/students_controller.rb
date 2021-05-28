@@ -1,6 +1,6 @@
 class Api::StudentsController < ApiController
   before_action :check_admin!
-  before_action :set_student, only: [:show, :update]
+  before_action :set_student, only: [:show, :update, :destroy]
 
   META_PARAMS = %i(page per_page sort).freeze
 
@@ -11,7 +11,7 @@ class Api::StudentsController < ApiController
 
     paginated = params[:page].present? ?
       @students.page(params[:page]).per(params[:per_page] || 20) :
-      @students.all
+      @students.all.page(0)
 
 
     render 'api/students/index', locals: {
@@ -52,6 +52,18 @@ class Api::StudentsController < ApiController
     else
       render json: {
         errors: @student.errors
+      }
+    end
+  end
+
+  def destroy
+    if @student.destroy
+      render json: {
+        data: { message: t('students.deleted')}
+      }
+    else
+      render json: {
+        data: { errors: @student.errors }
       }
     end
   end

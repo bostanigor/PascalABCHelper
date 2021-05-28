@@ -12,7 +12,7 @@ class Api::SolutionsController < ApiController
 
     paginated = params[:page].present? ?
       @solutions.page(params[:page]).per(params[:per_page] || 20) :
-      @solutions.all
+      @solutions.all.page(0)
 
     render 'api/solutions/index', locals: {
       solutions: paginated,
@@ -28,7 +28,7 @@ class Api::SolutionsController < ApiController
 
   def create
     @task = Task.find_by(ref: params[:ref])
-    render json: { error: "Task is not found" }, status: 500 and return unless @task.present?
+    render json: { error: t("tasks.not_found") }, status: 500 and return unless @task.present?
 
     @solution = @task.solutions.find_by(student: @student) ||
       Solution.new(task: @task, student: @student)
@@ -61,7 +61,8 @@ class Api::SolutionsController < ApiController
         :dir
       ]
     )
-    t.merge(student_id: current_user.student.id) if !current_user.is_admin
+    t.merge!(student_id: current_user.student.id) if !current_user.is_admin
+    t
   end
 
   def set_solution =

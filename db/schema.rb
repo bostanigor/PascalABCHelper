@@ -49,6 +49,8 @@ ActiveRecord::Schema.define(version: 2021_05_12_110312) do
     t.string "name"
     t.string "ref"
     t.decimal "rating", precision: 10, scale: 2
+    t.integer "successfull_attempts", default: 0
+    t.integer "all_attempts", default: 0
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end

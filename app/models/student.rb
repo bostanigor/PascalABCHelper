@@ -1,7 +1,7 @@
 class Student < ApplicationRecord
   include Sortable
 
-  belongs_to :user
+  belongs_to :user, dependent: :destroy
   belongs_to :group
 
   has_many :solutions

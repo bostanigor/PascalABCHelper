@@ -4,8 +4,8 @@ class CreateTasks < ActiveRecord::Migration[6.0]
       t.string :name
       t.string :ref
       t.decimal :rating, precision: 10, scale: 2
-      t.integer :successfull_attempts
-      t.integer :unsuccessfull_attempts
+      t.integer :successfull_attempts, default: 0
+      t.integer :all_attempts, default: 0
 
       t.timestamps
     end

@@ -1,0 +1,13 @@
+ru:
+  auth:
+    failed: "Неверные данные"
+  jwt:
+    invalid: "Недействительный токен"
+    expired: "Токен истёк"
+  tasks:
+    deleted: "Задача удалена"
+    not_found: "Задача не найдена"
+  students:
+    deleted: "Студент удалён"
+  groups:
+    deleted: "Группа удалена"

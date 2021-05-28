@@ -1,1 +1,1 @@
-json.(task, :id, :name, :ref, :rating)
+json.(task, :id, :name, :ref, :rating, :successfull_attempts, :all_attempts)
