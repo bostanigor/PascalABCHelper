@@ -50,7 +50,6 @@ class Api::StudentsController < ApiController
         student: @student
       }
     else
-      byebug
       render json: {
         errors: @student.errors
       }

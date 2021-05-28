@@ -1,5 +1,5 @@
 class Api::TasksController < ApiController
-  before_action :check_admin!
+  before_action :check_admin!, only: [:create, :update]
   before_action :set_task, only: [:show, :update]
 
   def index

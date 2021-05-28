@@ -1,5 +1,5 @@
 class Api::SolutionsController < ApiController
-  before_action :check_admin!, except: [:create]
+  before_action :check_admin!, except: [:create, :index]
   before_action :check_student!, only: [:create]
   before_action :set_solution, only: [:show]
 
@@ -51,7 +51,7 @@ class Api::SolutionsController < ApiController
   private
 
   def index_params
-    params.permit(
+    t = params.permit(
       :student_id,
       :task_id,
       :page,
@@ -61,6 +61,7 @@ class Api::SolutionsController < ApiController
         :dir
       ]
     )
+    t.merge(student_id: current_user.student.id) if !current_user.is_admin
   end
 
   def set_solution =
