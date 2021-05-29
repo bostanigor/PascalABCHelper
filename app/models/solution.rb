@@ -2,11 +2,11 @@ class Solution < ApplicationRecord
   belongs_to :student
   belongs_to :task
 
-  before_create :set_default
-  before_update :check_time
-  after_save :change_task_rating
+  has_many :attempts, dependent: :destroy
+  accepts_nested_attributes_for :attempts, allow_destroy: true
 
-  private
+  after_initialize :set_default
+  after_save :change_task_rating
 
   def change_task_rating
     task.all_attempts += 1
@@ -17,21 +17,10 @@ class Solution < ApplicationRecord
     task.save
   end
 
-  def check_time
-    time_now = Time.now
-
-    if is_successfull && is_successfull_changed? ||
-       !is_successfull && !is_successfull_changed? &&
-       time_now > (self.last_attempt_at + 5.seconds)
-      self.attempts_count += 1
-      self.last_attempt_at = time_now
-    else
-      raise ActiveRecord::Rollback
-    end
-  end
+  private
 
   def set_default
-    self.attempts_count = 1
-    self.last_attempt_at = Time.now
+    self.last_attempt_at ||= Time.now
+    self.attempts_count ||= 0
   end
 end

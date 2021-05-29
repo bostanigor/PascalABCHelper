@@ -5,7 +5,6 @@ class CreateStudents < ActiveRecord::Migration[6.0]
       t.references :group, null: false, foreign_key: true
       t.string :first_name
       t.string :last_name
-      t.datetime :birthdate
 
       t.timestamps
     end

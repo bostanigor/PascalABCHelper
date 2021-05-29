@@ -18,11 +18,6 @@ students = (0..24).map do |i|
     first_name: "Имя-#{i}",
     last_name: "Фамилия-#{i}",
     group: groups.sample,
-    birthdate: Date.new(
-      prng.rand(2000..2005),
-      prng.rand(1..12),
-      prng.rand(1..28)
-    ),
 
     user_attributes: {
       email: "student_#{i}@example.com",
@@ -38,7 +33,6 @@ solutions = tasks.map do |task|
     sol = Solution.create(
       student: student,
       task: task,
-      is_successfull: prng.rand(0..100) > 80
     )
   end
 end.flatten
@@ -47,7 +41,12 @@ end.flatten
   puts "Attempt # #{attempt}"
   solutions.each do |solution|
     next if solution.is_successfull
-    solution.update(is_successfull: prng.rand(0..100) > 80)
+    Attempt.create!(
+      solution: solution,
+      status: prng.rand(0..100) > 80 ?
+        :successfull : :not_successfull,
+      code_text: "CODE_TEXT_#{attempt}"
+    )
   end
   sleep(5)
 end

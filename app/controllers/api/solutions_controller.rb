@@ -1,6 +1,4 @@
 class Api::SolutionsController < ApiController
-  before_action :check_admin!, except: [:create, :index]
-  before_action :check_student!, only: [:create]
   before_action :set_solution, only: [:show]
 
   META_PARAMS = %i(page per_page sort).freeze
@@ -21,34 +19,22 @@ class Api::SolutionsController < ApiController
   end
 
   def show
+    if !current_user.is_admin && @solution.student != current_user.student
+      render json: { error: t("auth.not_authorized")}, code: 500 and return
+    end
+
     render 'api/solutions/show', locals: {
       solution: @solution
     }
   end
 
-  def create
-    @task = Task.find_by(ref: params[:ref])
-    render json: { error: t("tasks.not_found") }, status: 500 and return unless @task.present?
 
-    @solution = @task.solutions.find_by(student: @student) ||
-      Solution.new(task: @task, student: @student)
-
-    @solution.assign_attributes(
-      is_successfull: params[:is_successfull],
-    )
-
-    if @solution.save
-      render 'api/solutions/show', locals: {
-        solution: @solution
-      }
-    else
-      render json: {
-        errors: @solution.errors
-      }
-    end
-  end
 
   private
+
+  def create_params
+    params.require(:solution).permit(:ref, :status, :code_text)
+  end
 
   def index_params
     t = params.permit(

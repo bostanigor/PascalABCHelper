@@ -1,6 +1,7 @@
 ru:
   auth:
     failed: "Неверные данные"
+    not_authorized: "Данные недоступны"
   jwt:
     invalid: "Недействительный токен"
     expired: "Токен истёк"

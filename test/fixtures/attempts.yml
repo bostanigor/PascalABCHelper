@@ -1,0 +1,11 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  code_text: MyText
+  status: 1
+  solution: one
+
+two:
+  code_text: MyText
+  status: 1
+  solution: two

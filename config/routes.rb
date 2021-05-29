@@ -9,5 +9,6 @@ Rails.application.routes.draw do
     resources :groups
     resources :tasks
     resources :solutions
+    resources :attempts
   end
 end
