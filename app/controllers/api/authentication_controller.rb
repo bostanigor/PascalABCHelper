@@ -17,4 +17,13 @@ class Api::AuthenticationController < ApiController
       student: @student
     }
   end
+
+  def update_password
+    if current_user&.valid_password?(params[:old_password])
+      current_user.update(password: params[:new_password])
+      render json: { message: t('auth.password_changed')}, status: 200
+    else
+      render json: { error: t('auth.wrong_password') }, status: 401
+    end
+  end
 end

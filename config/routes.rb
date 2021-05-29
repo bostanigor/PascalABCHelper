@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   namespace :api, defaults: { format: :json } do
     post '/auth', to: 'authentication#create'
     get  '/auth', to: 'authentication#fetch'
+    patch '/auth/password', to: 'authentication#update_password'
 
     resources :students
     resources :groups

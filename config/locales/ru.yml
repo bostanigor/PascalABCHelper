@@ -2,6 +2,8 @@ ru:
   auth:
     failed: "Неверные данные"
     not_authorized: "Данные недоступны"
+    wrong_password: "Неверный пароль"
+    password_changed: "Пароль успешно изменён"
   jwt:
     invalid: "Недействительный токен"
     expired: "Токен истёк"

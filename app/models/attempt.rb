@@ -14,7 +14,7 @@ class Attempt < ApplicationRecord
 
     solution.attempts_count += 1
     solution.last_attempt_at = time_now
-    solution.is_successfull = status == :successfull
+    solution.is_successfull = self.successfull?
     solution.save
   end
 end

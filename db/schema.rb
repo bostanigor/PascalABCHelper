@@ -31,7 +31,7 @@ ActiveRecord::Schema.define(version: 2021_05_29_071124) do
   end
 
   create_table "solutions", force: :cascade do |t|
-    t.boolean "is_successfull"
+    t.boolean "is_successfull", default: false
     t.integer "attempts_count", default: 0
     t.datetime "last_attempt_at"
     t.bigint "student_id", null: false

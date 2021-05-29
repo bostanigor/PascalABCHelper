@@ -26,20 +26,20 @@ class Api::AttemptsController < ApiController
   end
 
   def create
-    @task = Task.find_by(create_params[:ref])
+    @task = Task.find_by(ref: create_params[:ref])
     render json: { error: t("tasks.not_found") }, status: 401 and return unless @task.present?
 
     @solution = @task.solutions.find_by(student: @student) ||
       Solution.new(task: @task, student: @student)
     @solution.attempts << Attempt.new(create_params.except(:ref))
 
-    if @soluion.save
+    if @solution.save
       render 'api/solutions/show', locals: {
         solution: @solution
       }
     else
       render json: {
-        errors: @attempt.errors
+        errors: @solution.errors
       }
     end
   end
@@ -47,7 +47,7 @@ class Api::AttemptsController < ApiController
   private
 
   def create_params
-    params.require(:attempts).permit(:ref, :status, :code_text)
+    params.permit(:ref, :status, :code_text)
   end
 
   def index_params
