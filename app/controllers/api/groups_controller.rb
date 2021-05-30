@@ -78,13 +78,13 @@ class Api::GroupsController < ApiController
 
     contents.lines.map do |line|
       first_name, last_name, email =
-        (line.scan /"([\w+\s]*)" "([\w+\s]*)" ([\w+\.]+@[\w+\.]+)/.flatten)
+        (line.scan /"([\w+\s]*)" "([\w+\s]*)" ([\w+\.]+@[\w+\.]+)/).flatten
       {
         first_name: first_name,
         last_name: last_name,
         user_attributes: {
           email: email,
-          password: password
+          password: "password"
         }
       }
     end
