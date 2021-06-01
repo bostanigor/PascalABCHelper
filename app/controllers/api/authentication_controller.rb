@@ -2,7 +2,7 @@ class Api::AuthenticationController < ApiController
   skip_before_action :authenticate_user!, only: [:create]
 
   def create
-    user = User.find_by(email: params[:email])
+    user = User.find_by(username: params[:username])
     if user&.valid_password?(params[:password])
       render json: { data: { token: JsonWebToken.encode(sub: user.id) } }
     else

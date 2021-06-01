@@ -4,7 +4,7 @@ json.(student,
   :last_name,
 )
 
-json.email student.user.email
+json.username student.user.username
 json.group do
   json.partial! 'api/groups/group', group: student.group
 end

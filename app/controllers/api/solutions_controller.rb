@@ -5,8 +5,8 @@ class Api::SolutionsController < ApiController
 
   def index
     @solutions = Solution.includes(:student, :task)
-      .order(created_at: :desc)
-      .where(index_params.except(*META_PARAMS))
+      .sort_query(sort_params)
+      .filter_query(index_params.except(*META_PARAMS))
 
     paginated = params[:page].present? ?
       @solutions.page(params[:page]).per(params[:per_page] || 20) :
@@ -49,6 +49,10 @@ class Api::SolutionsController < ApiController
     )
     t.merge!(student_id: current_user.student.id) if !current_user.is_admin
     t
+  end
+
+  def sort_params
+    index_params[:sort].to_h.reverse_merge(col: :created_at, dir: :desc)
   end
 
   def set_solution =

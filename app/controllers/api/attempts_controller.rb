@@ -6,8 +6,8 @@ class Api::AttemptsController < ApiController
 
   def index
     @attempts = Attempt.includes(solution: [:task, :student])
-      .order(created_at: :desc)
-      .where(index_params.except(*META_PARAMS))
+      .sort_query(sort_params)
+      .filter_query(index_params.except(*META_PARAMS))
 
     paginated = params[:page].present? ?
       @attempts.page(params[:page]).per(params[:per_page] || 20) :
@@ -26,14 +26,16 @@ class Api::AttemptsController < ApiController
   end
 
   def create
-    @task = Task.find_by(ref: create_params[:ref])
+    @task = Task.find_by(name: create_params[:name])
     render json: { error: t("tasks.not_found") }, status: 401 and return unless @task.present?
+
 
     @solution = @task.solutions.find_by(student: @student) ||
       Solution.new(task: @task, student: @student)
-    @solution.attempts << Attempt.new(create_params.except(:ref))
+    @attempt = Attempt.new(create_params.except(:name))
+    @attempt.solution = @solution
 
-    if @solution.save
+    if @attempt.save
       render 'api/solutions/show', locals: {
         solution: @solution
       }
@@ -47,7 +49,7 @@ class Api::AttemptsController < ApiController
   private
 
   def create_params
-    params.permit(:ref, :status, :code_text)
+    params.permit(:name, :status, :code_text)
   end
 
   def index_params
@@ -60,6 +62,10 @@ class Api::AttemptsController < ApiController
         :dir
       ]
     )
+  end
+
+  def sort_params
+    index_params[:sort].to_h.reverse_merge(col: :created_at, dir: :desc)
   end
 
   def set_attempt =

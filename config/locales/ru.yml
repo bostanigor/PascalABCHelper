@@ -1,4 +1,10 @@
 ru:
+  activerecord:
+    errors:
+      messages:
+        record_invalid: "Возникли ошибки: %{errors}"
+        invalid: "неподходящего формата"
+        taken: "значение '%{value}' занято"
   auth:
     failed: "Неверные данные"
     not_authorized: "Данные недоступны"

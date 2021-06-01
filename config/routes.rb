@@ -6,6 +6,9 @@ Rails.application.routes.draw do
     get  '/auth', to: 'authentication#fetch'
     patch '/auth/password', to: 'authentication#update_password'
 
+    get   '/settings', to: 'settings#index'
+    patch '/settings', to: 'settings#update'
+
     resources :students
     resources :groups
     resources :tasks

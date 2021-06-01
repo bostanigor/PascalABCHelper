@@ -1,5 +1,5 @@
 json.data do
-  json.email user.email
+  json.username user.username
   json.first_name student&.first_name
   json.last_name student&.last_name
   json.group do

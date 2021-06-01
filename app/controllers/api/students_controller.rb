@@ -7,12 +7,10 @@ class Api::StudentsController < ApiController
   def index
     @students = Student.includes(:user, :group)
       .sort_query(sort_params)
-      .where(index_params.except(*META_PARAMS))
+      .filter_query(index_params.except(*META_PARAMS))
 
-    paginated = params[:page].present? ?
-      @students.page(params[:page]).per(params[:per_page] || 20) :
-      @students.all.page(0)
-
+    paginated = @students.page(params[:page] || 1)
+      .per(params[:per_page] || 20)
 
     render 'api/students/index', locals: {
       students: paginated,
@@ -77,7 +75,7 @@ class Api::StudentsController < ApiController
       :birthdate,
       :group_id,
       user_attributes: [
-        :email,
+        :username,
         :password,
       ]
     )
@@ -86,6 +84,8 @@ class Api::StudentsController < ApiController
   def index_params
     params.permit(
       :group_id,
+      :first_name,
+      :last_name,
       :page,
       :per_page,
       sort: [

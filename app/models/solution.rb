@@ -1,4 +1,7 @@
 class Solution < ApplicationRecord
+  include Sortable
+  include Filterable
+
   belongs_to :student
   belongs_to :task
 
@@ -6,7 +9,10 @@ class Solution < ApplicationRecord
   accepts_nested_attributes_for :attempts, allow_destroy: true
 
   after_initialize :set_default
-  after_save :change_task_rating
+  after_update :change_task_rating
+
+  scope :filter_by_task_id, -> (task_id) { where task_id: task_id }
+  scope :filter_by_student_id, -> (student_id) { where student_id: student_id }
 
   def change_task_rating
     task.all_attempts += 1
@@ -20,7 +26,6 @@ class Solution < ApplicationRecord
   private
 
   def set_default
-    self.last_attempt_at ||= Time.now
     self.attempts_count ||= 0
   end
 end

@@ -1,4 +1,4 @@
-User.create!(email: 'admin@example.com', password: 'password', is_admin: true)
+User.create!(username: 'admin', password: 'password', is_admin: true)
 
 prng = Random.new
 
@@ -8,8 +8,8 @@ end
 
 tasks = (1..5).map do |i|
   Task.create!(
-    name: "Задача-#{i}",
-    ref: "task-#{i}"
+    name: "Task#{i}",
+    description: "Описание # #{i}"
   )
 end
 
@@ -20,7 +20,7 @@ students = (0..24).map do |i|
     group: groups.sample,
 
     user_attributes: {
-      email: "student_#{i}@example.com",
+      username: "student_#{i}",
       password: "password_#{i}",
       is_admin: false
     }
@@ -44,7 +44,7 @@ end.flatten
     Attempt.create!(
       solution: solution,
       status: prng.rand(0..100) > 80 ?
-        :successfull : :not_successfull,
+        "successfull" : "not_successfull",
       code_text: "CODE_TEXT_#{attempt}"
     )
   end
