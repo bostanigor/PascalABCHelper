@@ -11,7 +11,7 @@ class Attempt < ApplicationRecord
   def check_time
     time_now = Time.now
     interval = Setting.instance.retry_interval
-    is_successfull = self.status == "successfull"
+    is_successfull = self.status == "success"
 
     if solution.is_successfull ||
         !is_successfull &&

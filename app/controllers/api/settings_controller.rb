@@ -10,7 +10,8 @@ class Api::SettingsController < ApiController
   end
 
   def update
-    if Setting.instance.update(update_params)
+    @settings = Setting.instance
+    if @settings.update(update_params)
       render 'api/settings/index', locals: {
         settings: @settings
       }

@@ -44,7 +44,7 @@ end.flatten
     Attempt.create!(
       solution: solution,
       status: prng.rand(0..100) > 80 ?
-        "successfull" : "not_successfull",
+        "success" : "not_solved",
       code_text: "CODE_TEXT_#{attempt}"
     )
   end
