@@ -1,11 +1,10 @@
 class Api::TasksController < ApiController
-  before_action :check_admin!, only: [:create, :update]
-  before_action :set_task, only: [:show, :update, :destroy]
+  load_and_authorize_resource
 
   META_PARAMS = %i(page per_page sort).freeze
 
   def index
-    @tasks = Task.order(created_at: :desc)
+    @tasks = @tasks.order(created_at: :desc)
       .sort_query(sort_params)
       .filter_query(index_params.except(*META_PARAMS))
 
@@ -39,6 +38,15 @@ class Api::TasksController < ApiController
     end
   end
 
+  def create_by_file
+    contents = parse_file(params[:file])
+    contents.each do |attributes|
+      @task = find_or_initialize_by(name: attributes[:name])
+      @task.description = attributes[:description]
+      @task.save
+    end
+  end
+
   def update
     if @task.update(create_params)
       render 'api/tasks/show', locals: {
@@ -63,6 +71,10 @@ class Api::TasksController < ApiController
     end
   end
 
+  def batch_destroy
+    Task.destroy(params[:ids])
+  end
+
   private
 
   def index_params
@@ -84,6 +96,22 @@ class Api::TasksController < ApiController
   def create_params =
     params.require(:task).permit(:name, :description)
 
-  def set_task =
-    @task = Task.find(params[:id])
+  def parse_file(file)
+    if file.respond_to?(:read)
+      contents = file.read
+    elsif file.respond_to?(:path)
+      contents = File.read(file.path)
+    else
+      return nil
+    end
+
+    contents.lines.map do |line|
+      name, description =
+        (line.scan /"([\w+\s]*)"\s*([\w+\s]*)/).flatten
+      {
+        name: name,
+        description: description
+      }
+    end
+  end
 end

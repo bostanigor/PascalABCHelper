@@ -1,10 +1,10 @@
 class Api::SettingsController < ApiController
-  before_action :check_admin!
+  authorize_resource
 
-  def index
+  def show
     @settings = Setting.instance
 
-    render 'api/settings/index', locals: {
+    render 'api/settings/show', locals: {
       settings: @settings
     }
   end

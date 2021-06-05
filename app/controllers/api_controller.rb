@@ -2,6 +2,10 @@ class ApiController < ApplicationController
   before_action :set_default_format
   before_action :authenticate_user!
 
+  rescue_from CanCan::AccessDenied do |exception|
+    render json: { error: t('auth.not_authorized') }, status: :forbidden
+  end
+
   def meta_attributes(collection, extra_meta = {})
     {
       current_page: collection.current_page,
@@ -13,15 +17,6 @@ class ApiController < ApplicationController
   end
 
   private
-
-  def check_admin!
-    render json: { error: "Current user is not admin" }, status: 401 unless current_user.is_admin
-  end
-
-  def check_student!
-    @student = Student.find_by(user: current_user)
-    render json: { error: "Current user is not student" }, status: 401 unless @student.present?
-  end
 
   def set_default_format
     request.format = :json

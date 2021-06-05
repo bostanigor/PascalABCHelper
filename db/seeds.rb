@@ -9,7 +9,7 @@ end
 tasks = (1..5).map do |i|
   Task.create!(
     name: "Task#{i}",
-    description: "Описание # #{i}"
+    description: "Описание # #{i}" * 100
   )
 end
 

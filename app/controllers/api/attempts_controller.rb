@@ -1,11 +1,10 @@
 class Api::AttemptsController < ApiController
-  before_action :check_student!, only: [:create]
-  before_action :set_attempt, only: [:show]
+  load_and_authorize_resource
 
   META_PARAMS = %i(page per_page sort).freeze
 
   def index
-    @attempts = Attempt.includes(solution: [:task, :student])
+    @attempts = @attempts.includes(solution: [:task, :student])
       .sort_query(sort_params)
       .filter_query(index_params.except(*META_PARAMS))
 
@@ -29,7 +28,6 @@ class Api::AttemptsController < ApiController
     @task = Task.find_by(name: create_params[:name])
     render json: { error: t("tasks.not_found") }, status: 401 and return unless @task.present?
 
-
     @solution = @task.solutions.find_by(student: @student) ||
       Solution.new(task: @task, student: @student)
     @attempt = Attempt.new(create_params.except(:name))
@@ -42,6 +40,19 @@ class Api::AttemptsController < ApiController
     else
       render json: {
         errors: @solution.errors
+      }
+    end
+  end
+
+  def destroy_all
+    @attempts = Attempt.all
+    if @attempts.destroy_all
+      render json: {
+        data: { message: t('attempts.deleted')}
+      }
+    else
+      render json: {
+        errors: @attempts.errors
       }
     end
   end
@@ -67,7 +78,4 @@ class Api::AttemptsController < ApiController
   def sort_params
     index_params[:sort].to_h.reverse_merge(col: :created_at, dir: :desc)
   end
-
-  def set_attempt =
-    @attempt = Attempt.find(params[:id])
 end

@@ -1,11 +1,10 @@
 class Api::GroupsController < ApiController
-  before_action :check_admin!
-  before_action :set_group, only: [:show, :update, :destroy]
+  load_and_authorize_resource
 
   META_PARAMS = %i(page per_page sort).freeze
 
   def index
-    @groups = Group.order(created_at: :desc)
+    @groups = @groups.order(created_at: :desc)
       .sort_query(sort_params)
       .filter_query(index_params.except(*META_PARAMS))
 
@@ -61,6 +60,10 @@ class Api::GroupsController < ApiController
         data: { errors: @group.errors }
       }
     end
+  end
+
+  def batch_destroy
+    Group.destroy(params[:ids])
   end
 
   private

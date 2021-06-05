@@ -1,11 +1,10 @@
 class Api::StudentsController < ApiController
-  before_action :check_admin!
-  before_action :set_student, only: [:show, :update, :destroy]
+  load_and_authorize_resource
 
   META_PARAMS = %i(page per_page sort).freeze
 
   def index
-    @students = Student.includes(:user, :group)
+    @students = @students.includes(:user, :group)
       .sort_query(sort_params)
       .filter_query(index_params.except(*META_PARAMS))
 
@@ -64,6 +63,10 @@ class Api::StudentsController < ApiController
         data: { errors: @student.errors }
       }
     end
+  end
+
+  def batch_destroy
+    Student.destroy(params[:ids])
   end
 
   private
