@@ -7,4 +7,5 @@ class Task < ApplicationRecord
   has_many :solutions, dependent: :destroy
 
   scope :filter_by_name, -> (name) { where("name ILIKE ?", "%#{name}%") }
+  scope :filter_by_description, -> (description) { where("description ILIKE ?", "%#{description}%") }
 end

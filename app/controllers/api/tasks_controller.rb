@@ -39,11 +39,26 @@ class Api::TasksController < ApiController
   end
 
   def create_by_file
-    contents = parse_file(params[:file])
+    contents = parse_file(params[:tasks][:file])
+    result = []
+    errors = []
     contents.each do |attributes|
-      @task = find_or_initialize_by(name: attributes[:name])
+      @task = Task.find_or_initialize_by(name: attributes[:name])
       @task.description = attributes[:description]
-      @task.save
+      if @task.valid?
+        result << @task
+      else
+        errors << @task.errors.full_messages
+      end
+    end
+    if errors.empty?
+      result.each(&:save)
+      render 'api/tasks/index', locals: {
+        tasks: result,
+        meta: nil
+      }
+    else
+      render json: { errors: errors }, status: 400
     end
   end
 
@@ -80,6 +95,7 @@ class Api::TasksController < ApiController
   def index_params
     params.permit(
       :name,
+      :description,
       :page,
       :per_page,
       sort: [
@@ -107,7 +123,7 @@ class Api::TasksController < ApiController
 
     contents.lines.map do |line|
       name, description =
-        (line.scan /"([\w+\s]*)"\s*([\w+\s]*)/).flatten
+        (line.scan /"([\w+\s]*)"\s*(.*)/).flatten
       {
         name: name,
         description: description
