@@ -9,10 +9,13 @@ class Solution < ApplicationRecord
   accepts_nested_attributes_for :attempts, allow_destroy: true
 
   after_initialize :set_default
+  after_update :inc_completed_tasks, if: :is_successfull?
   after_update :change_task_rating
 
   scope :filter_by_task_id, -> (task_id) { where task_id: task_id }
   scope :filter_by_student_id, -> (student_id) { where student_id: student_id }
+
+  private
 
   def change_task_rating
     task.all_attempts += 1
@@ -23,7 +26,10 @@ class Solution < ApplicationRecord
     task.save
   end
 
-  private
+  def inc_completed_tasks
+    student.completed_tasks_count += 1
+    student.save
+  end
 
   def set_default
     self.attempts_count ||= 0

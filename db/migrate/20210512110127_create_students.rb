@@ -6,6 +6,8 @@ class CreateStudents < ActiveRecord::Migration[6.0]
       t.string :first_name
       t.string :last_name
 
+      t.integer :completed_tasks_count, default: 0
+
       t.timestamps
     end
   end
