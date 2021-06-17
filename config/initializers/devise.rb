@@ -279,7 +279,7 @@ Devise.setup do |config|
 
   config.warden do |manager|
     # manager.intercept_401 = false
-    manager.strategies.add :jwt, Devise::Strategies::JWT
+    manager.strategies.add :jwt, Devise::Strategies::JWTStrat
     manager.default_strategies(scope: :user).unshift :jwt
   end
 
@@ -313,7 +313,7 @@ end
 
 module Devise
   module Strategies
-    class JWT < Base
+    class JWTStrat < Base
       def valid?
         request.headers['Authorization'].present?
       end
@@ -323,9 +323,9 @@ module Devise
         payload = JsonWebToken.decode(token)
         success! User.find(payload['sub'])
       rescue JWT::ExpiredSignature
-        fail! (t "jwt.expired")
+        fail! (I18n.t "jwt.expired")
       rescue JWT::DecodeError
-        fail! (t "jwt.invalid")
+        fail! (I18n.t "jwt.invalid")
       end
 
     end

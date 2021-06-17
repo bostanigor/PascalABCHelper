@@ -1,5 +1,5 @@
 class Api::AttemptsController < ApiController
-  load_and_authorize_resource
+  load_and_authorize_resource except: [:create]
 
   META_PARAMS = %i(page per_page sort).freeze
 
@@ -26,7 +26,10 @@ class Api::AttemptsController < ApiController
 
   def create
     @task = Task.find_by(name: create_params[:name])
-    render json: { error: t("tasks.not_found") }, status: 401 and return unless @task.present?
+    render json: { error: t("tasks.not_found") }, status: 404 and return unless @task.present?
+
+    @student = current_user.student
+    render json: { error: t("auth.not_authorized") }, status: 401 and return unless @student.present?
 
     @solution = @task.solutions.find_by(student: @student) ||
       Solution.new(task: @task, student: @student)
@@ -34,12 +37,12 @@ class Api::AttemptsController < ApiController
     @attempt.solution = @solution
 
     if @attempt.save
-      render 'api/solutions/show', locals: {
-        solution: @solution
+      render 'api/attempts/show', locals: {
+        attempt: @attempt
       }
     else
       render json: {
-        errors: @solution.errors
+        errors: @attempt.errors
       }
     end
   end
