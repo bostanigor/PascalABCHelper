@@ -12,7 +12,7 @@ class Api::SettingsController < ApiController
   def update
     @settings = Setting.instance
     if @settings.update(update_params)
-      render 'api/settings/index', locals: {
+      render 'api/settings/show', locals: {
         settings: @settings
       }
     else

@@ -15,6 +15,8 @@ append :linked_dirs, "log", "tmp/pids", "tmp/cache", "tmp/sockets", "public/syst
 
 set :conditionally_migrate, true
 
+set :passenger_restart_with_touch, true
+
 namespace :deploy do
   namespace :check do
     before :linked_files, :set_master_key do

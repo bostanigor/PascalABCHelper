@@ -21,7 +21,7 @@ class Attempt < ApplicationRecord
     end
 
     code_text_limit = Setting.instance.code_text_limit
-    code_text.slice!(0, code_text_limit) if code_text.present? && code_text_limit.present?
+    code_text = code_text.slice(0, code_text_limit) if code_text.present? && code_text_limit.present?
 
     solution.attempts_count += 1
     solution.last_attempt_at = time_now
